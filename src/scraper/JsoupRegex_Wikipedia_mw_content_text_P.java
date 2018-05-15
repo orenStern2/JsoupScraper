@@ -3,22 +3,21 @@ package scraper;
 import org.jsoup.Jsoup;
 import java.net.*;
 import java.io.*;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 
-public class Scraper {
+public class JsoupRegex_Wikipedia_mw_content_text_P {
 	public static void main(String[] args) {
-		scrapeTopic("wiki/Python");
+		scrapeTopic("/wiki/Python");
 	}
 	
 	public static void scrapeTopic(String url){
 		String html = getUrl("https://www.wikipedia.org/"+url);
-		Elements doc = Jsoup.parse(html).getElementsMatchingOwnText("(?i)[0-9]th");
-                String desc = doc.text();       
-                
-                
-                
-		System.out.println(desc);
+		Document doc = Jsoup.parse(html);
+                String contentText = doc.select("#mw-content-text p").first().text();
+
+		System.out.println(contentText);
 	}
 	
 	public static String getUrl(String url){
