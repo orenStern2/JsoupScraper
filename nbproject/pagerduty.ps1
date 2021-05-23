@@ -1,3 +1,4 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls12
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Content-Type", "application/json")
 
@@ -5,3 +6,4 @@ $body = "{`n    `"payload`": {`n        `"summary`": `"Testing from PowerShell`"
 
 $response = Invoke-RestMethod 'https://events.pagerduty.com/v2/enqueue' -Method 'POST' -Headers $headers -Body $body
 $response | ConvertTo-Json
+
