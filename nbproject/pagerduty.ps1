@@ -52,7 +52,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # import siddur_list CSV file
 siddur_list = pd.read_csv(
-    r'C:\Users\thesterns\Google Drive\python\Udemy\Python and Django Full stack Web Developer Bootcamp\Course 010 - DJANGO\Django 02 - first project\My_Django_stuff\mishnah\static\mishnahyot.csv',
+    r'C:\Users\orenst\Google Drive\python\Udemy\Python and Django Full stack Web Developer Bootcamp\Course 010 - DJANGO\Django 02 - first project\My_Django_stuff\mishnah\static\mishnahyot.csv',
     encoding="ISO-8859-8")
 
 
@@ -83,7 +83,7 @@ siddur_list['mshnt_list'] = list(result)
 
 n = 0
 haluka_df_row = 0
-mshnt_per_day = 9 # mishnayot_count issue with 9 line 21 and 56 in haluka_df
+mshnt_per_day = 9 # mishnayot_count issue with 9 line 56 in haluka_df
 
 
 haluka_df_index = create_mishnahyot_np_array(math.ceil(4192/mshnt_per_day))
@@ -98,6 +98,8 @@ haluka_df['mishnahyot'] = 'None'
 siddur_list['chapter_from_past'] = None
 
 tarctate_to_merdge = False
+
+keep_tractate_from_end_of_N_loop = False
 
 while n <= siddur_df_num_of_rows(siddur_list):
     flag=False
@@ -139,6 +141,7 @@ while n <= siddur_df_num_of_rows(siddur_list):
         print('line 80: is mshnt_list < mshnt_per_day:', get_mishnahot_np_array_from_df(siddur_list,'mshnt_list',n).size < mshnt_per_day and check_if_last_loop(n+1, siddur_list)==False)
         # =====================================  2a mshnt_list < =======================================================
         counter = 1
+
         while get_mishnahot_np_array_from_df(siddur_list,'mshnt_list',n).size < mshnt_per_day and check_if_last_loop(n+1, siddur_list)==False:
 
             if check_if_last_loop(n+1, siddur_list)==True:
@@ -195,6 +198,7 @@ while n <= siddur_df_num_of_rows(siddur_list):
                                 chptr_merdge = chptr_merdge +' '+ siddur_list['chapter'][i+1]
                                 if n != check_if_last_loop(n, siddur_list):
                                     tarctate_to_merdge = siddur_list['tractate'][n-1]
+                                    print('line 200')
                                 print('line 192', tarctate_to_merdge)
 
                             print('line 147')
@@ -274,6 +278,7 @@ while n <= siddur_df_num_of_rows(siddur_list):
                         print('172', chptr_merdge)
                         haluka_df['chapter'][haluka_df_row] = chptr_merdge
                         haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                        print('280', siddur_list['tractate'][i])
                         if n+1 != siddur_df_num_of_rows(siddur_list):
                             print('line 220 - i: {}, tractate in siddur: {}'.format(i, siddur_list['tractate'][i]))
 
@@ -282,7 +287,11 @@ while n <= siddur_df_num_of_rows(siddur_list):
                                 print('line 226', tractate_compare)
                             else:
                                 haluka_df['chapter'][haluka_df_row] = chptr_merdge
-                                haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                                if keep_tractate_from_end_of_N_loop and keep_tractate_from_end_of_N_loop != siddur_list['tractate'][i] and siddur_list['tractate'][i] != siddur_list['tractate'][i-1]:
+                                    haluka_df['tarctate'][haluka_df_row] = keep_tractate_from_end_of_N_loop + ' ' + siddur_list['tractate'][i]
+                                    keep_tractate_from_end_of_N_loop = False
+                                else:
+                                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
                                 print('line 230', siddur_list['tractate'][i] )
                             tractate_compare = siddur_list['tractate'][i]
                             #siddur_list['chapter_from_past'][i-] = chptr_merdge[len(chptr_merdge)-1:]
@@ -428,7 +437,7 @@ while n <= siddur_df_num_of_rows(siddur_list):
                 haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n]
                 break
 
-
+        keep_tractate_from_end_of_N_loop = False
         # =====================================  2c mshnt_list == ======================================================
         if flag == False:
             print('line 145: is mshnt_list == mshnt_per_day (and not last N):',  get_mishnahot_np_array_from_df(siddur_list,'mshnt_list',n).size == mshnt_per_day and check_if_last_loop(n, siddur_list)==False)
@@ -450,6 +459,8 @@ while n <= siddur_df_num_of_rows(siddur_list):
 
                 else:
                     haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
+
+                    keep_tractate_from_end_of_N_loop = siddur_list['tractate'][n]
                     haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
                 haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n]
                 haluka_df_row = haluka_df_row + 1
@@ -488,11 +499,33 @@ for index, row in haluka_df.iterrows():
 
 #haluka_df['mishnahyot'] = np.where((isnumpyempty(haluka_df.mishnahyot)),None,haluka_df.mishnahyot)
 
+
+zeraim = ["ברכות","פאה","דמאי","כלאיים","שביעית","תרומות","מעשרות","מעשר שני","חלה","ערלה","ביכורים"]
+moed = ["שבת", "עירובין","פסחים","שקלים","יומא","סוכה","ביצה","ראש השנה","תענית","מגילה","מועד קטן","חגיגה"]
+for i, row in haluka_df.iterrows():
+
+    first_tractate = row[1].split(' ')[0]
+    if "מעשר שני" in row[1]:
+        row['סידור'] = 'זרעים '
+
+    elif first_tractate in zeraim:
+        row['סידור'] =
+
+
+        try:
+            print('row 0', row[0].split(' ')[0])
+            print('row 1:',row[0].split(' ')[1])
+        except:
+            err = 'error'
+
+
+
+
 print(siddur_list['tractate'])
 print(haluka_df)
 
 
 # convert haluka_df to CSV
 haluka_df.to_csv(
-    r'C:\Users\thesterns\Google Drive\python\Udemy\Python and Django Full stack Web Developer Bootcamp\Course 010 - DJANGO\Django 02 - first project\My_Django_stuff\mishnah\static\haluka_df.csv',
+    r'C:\Users\orenst\Google Drive\python\Udemy\Python and Django Full stack Web Developer Bootcamp\Course 010 - DJANGO\Django 02 - first project\My_Django_stuff\mishnah\static\haluka_df.csv',
     encoding="ISO-8859-8")
