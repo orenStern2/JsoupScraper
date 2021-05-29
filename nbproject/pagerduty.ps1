@@ -1,3 +1,5 @@
+# Backup from 29.05.21 
+
 import pandas as pd
 import numpy as np
 import math
@@ -11,6 +13,7 @@ from mishnah.mishnah_app.halukaMishnahyot_functions import *
 # asgiref         3.3.1
 # bcrypt          3.2.0
 # cached-property 1.5.2
+# certifi         2020.6.20
 # certifi         2020.6.20
 # cffi            1.14.5
 # convertdate     2.3.2
@@ -83,7 +86,7 @@ siddur_list['mshnt_list'] = list(result)
 
 n = 0
 haluka_df_row = 0
-mshnt_per_day = 9 # mishnayot_count issue with 9 line 56 in haluka_df
+mshnt_per_day = 25 # mishnayot_count
 
 
 haluka_df_index = create_mishnahyot_np_array(math.ceil(4192/mshnt_per_day))
@@ -91,10 +94,10 @@ haluka_df_index = create_mishnahyot_np_array(math.ceil(4192/mshnt_per_day))
 
 
 haluka_df = pd.DataFrame(index=[haluka_df_index])
-
-haluka_df['tarctate'] = 'None'
-haluka_df['chapter'] = 'None'
-haluka_df['mishnahyot'] = 'None'
+haluka_df['סידור'] = 'None'
+haluka_df['מסכת'] = 'None'
+haluka_df['פרק'] = 'None'
+haluka_df['משניות'] = 'None'
 siddur_list['chapter_from_past'] = None
 
 tarctate_to_merdge = False
@@ -224,7 +227,7 @@ while n <= siddur_df_num_of_rows(siddur_list):
                 print('how much in the array', siddur_list['mshnt_list'][n+1])
 
                 # haluka_df append
-                haluka_df['mishnahyot'][haluka_df_row] = mshnt_merdge[:mshnt_per_day]
+                haluka_df['משניות'][haluka_df_row] = mshnt_merdge[:mshnt_per_day]
                 print('chptr_merdge line 140', chptr_merdge)
                 print('chapter in siddur_list', siddur_list )
                 if n+1 == siddur_df_num_of_rows(siddur_list):
@@ -232,66 +235,66 @@ while n <= siddur_df_num_of_rows(siddur_list):
                     if siddur_list['chapter_from_past'][n]:
                         print('161')
                         if flag_stand_alone_chapter:
-                            haluka_df['chapter'][haluka_df_row] = chptr_merdge
+                            haluka_df['פרק'][haluka_df_row] = chptr_merdge
 
                         else:
-                            haluka_df['chapter'][haluka_df_row] = siddur_list['chapter_from_past'][n]
-                            haluka_df['tarctate'][haluka_df_row]= siddur_list['tractate'][n]
+                            haluka_df['פרק'][haluka_df_row] = siddur_list['chapter_from_past'][n]
+                            haluka_df['מסכת'][haluka_df_row]= siddur_list['tractate'][n]
                             print('177')
                     else:
                         if n == siddur_df_num_of_rows(siddur_list):
-                            haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                            haluka_df['tarctate'][haluka_df_row]= siddur_list['tractate'][n]
+                            haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                            haluka_df['מסכת'][haluka_df_row]= siddur_list['tractate'][n]
                             print('line 173')
                         else:
                             if chptr_merdge:
                                 print('187', siddur_list['chapter'][i])
                                 if isinstance(siddur_list['chapter'][i], str)==False:
                                     print('line 185', siddur_list['chapter'][i])
-                                    haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][i]
-                                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                                    haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][i]
+                                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i]
                                 else:
-                                    haluka_df['chapter'][haluka_df_row] = chptr_merdge
-                                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                                    haluka_df['פרק'][haluka_df_row] = chptr_merdge
+                                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i]
 
                             else:
-                                haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n+1]
-                                haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n+1]
+                                haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n+1]
+                                haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n+1]
 
-                            print('184', haluka_df['chapter'])
-                    # print('line 166', haluka_df['chapter'][haluka_df_row])
+                            print('184', haluka_df['פרק'])
+                    # print('line 166', haluka_df['פרק'][haluka_df_row])
                 else:
                     if siddur_list['chapter_from_past'][n]:
                         if siddur_list['chapter_from_past'][n] in chptr_merdge and siddur_list['chapter'][n] in chptr_merdge:
-                            haluka_df['chapter'][haluka_df_row] = chptr_merdge
-                            if siddur_list['tractate'][i] != siddur_list['tractate'][i-1] and haluka_df['chapter'][haluka_df_row] in haluka_df['chapter'][haluka_df_row-1]:
-                                haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i-1] + ' ' +siddur_list['tractate'][i]
-                                print('line 256', siddur_list['tractate'][i - 1])
+                            haluka_df['פרק'][haluka_df_row] = chptr_merdge
+                            if siddur_list['tractate'][i] != siddur_list['tractate'][i-1] and haluka_df['פרק'][haluka_df_row] in haluka_df['פרק'][haluka_df_row]: # it was in haluka_df['פרק'][haluka_df_row-1]
+                                haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i-1] + ' ' +siddur_list['tractate'][i]
+                                print('line 256', haluka_df['פרק'][haluka_df_row])
                             else:
-                                haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
-                                print('line 254', siddur_list['tractate'][i-1])
+                                haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i]
+                                print('line 254', haluka_df['פרק'][haluka_df_row-1])
                         else:
                             print('169')
-                            haluka_df['chapter'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
-                            haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                            haluka_df['פרק'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
+                            haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i]
                     else:
                         print('172', chptr_merdge)
-                        haluka_df['chapter'][haluka_df_row] = chptr_merdge
-                        haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                        haluka_df['פרק'][haluka_df_row] = chptr_merdge
+                        haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i]
                         print('280', siddur_list['tractate'][i])
                         if n+1 != siddur_df_num_of_rows(siddur_list):
                             print('line 220 - i: {}, tractate in siddur: {}'.format(i, siddur_list['tractate'][i]))
 
-                            if tractate_compare != siddur_list['tractate'][i] and tractate_compare != 'False':
-                                haluka_df['tarctate'][haluka_df_row] =tractate_compare + ' ' + siddur_list['tractate'][i]
+                            if tractate_compare != siddur_list['tractate'][i] and tractate_compare != 'False' and 'א' not in chptr_merdge[0]:
+                                haluka_df['מסכת'][haluka_df_row] =tractate_compare + ' ' + siddur_list['tractate'][i]
                                 print('line 226', tractate_compare)
                             else:
-                                haluka_df['chapter'][haluka_df_row] = chptr_merdge
+                                haluka_df['פרק'][haluka_df_row] = chptr_merdge
                                 if keep_tractate_from_end_of_N_loop and keep_tractate_from_end_of_N_loop != siddur_list['tractate'][i] and siddur_list['tractate'][i] != siddur_list['tractate'][i-1]:
-                                    haluka_df['tarctate'][haluka_df_row] = keep_tractate_from_end_of_N_loop + ' ' + siddur_list['tractate'][i]
+                                    haluka_df['מסכת'][haluka_df_row] = keep_tractate_from_end_of_N_loop + ' ' + siddur_list['tractate'][i]
                                     keep_tractate_from_end_of_N_loop = False
                                 else:
-                                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][i]
+                                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][i]
                                 print('line 230', siddur_list['tractate'][i] )
                             tractate_compare = siddur_list['tractate'][i]
                             #siddur_list['chapter_from_past'][i-] = chptr_merdge[len(chptr_merdge)-1:]
@@ -315,13 +318,13 @@ while n <= siddur_df_num_of_rows(siddur_list):
 
             # haluka_df append
 
-            haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n]
+            haluka_df['משניות'][haluka_df_row] = siddur_list['mshnt_list'][n]
 
             #print("Line 203 - siddur_list['chapter'][n]", siddur_list['chapter'][haluka_df_row])
             print('n',n)
 
-            haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-            haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
+            haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+            haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n]
 
             break
 
@@ -348,25 +351,25 @@ while n <= siddur_df_num_of_rows(siddur_list):
             # haluka_df append
             print('line 231', siddur_list['chapter_from_past'][n])
             if siddur_list['chapter_from_past'][n]:
-                haluka_df['chapter'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
+                haluka_df['פרק'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
                 siddur_list['chapter_from_past'][n] = None
 
-                if  siddur_list['tractate'][n] not in haluka_df['tarctate'][haluka_df_row] and tractate_flag_once==False:
-                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n-1]+ ' ' + siddur_list['tractate'][n]
+                if  siddur_list['tractate'][n] not in haluka_df['מסכת'][haluka_df_row] and tractate_flag_once==False:
+                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n-1]+ ' ' + siddur_list['tractate'][n]
                     tractate_flag_once = True
-                    print("line 292 - haluka_df['tarctate'][haluka_df_row]: {}, siddur_list['tractate'][n]:{} ".format(haluka_df['tarctate'][haluka_df_row],len(siddur_list['tractate'][n])))
-                    print('line 293 - chapter:',  haluka_df['chapter'][haluka_df_row])
+                    print("line 292 - haluka_df['מסכת'][haluka_df_row]: {}, siddur_list['tractate'][n]:{} ".format(haluka_df['מסכת'][haluka_df_row],len(siddur_list['tractate'][n])))
+                    print('line 293 - chapter:',  haluka_df['פרק'][haluka_df_row])
                 else:
-                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
+                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n]
 
             else:
                 print('line 261 add haluka_df chapters {} to line {} in haluka_df'.format(siddur_list['chapter'][n], haluka_df_row))
-                haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
+                haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n]
 
             print(haluka_df)
 
-            haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n][:mshnt_per_day]
+            haluka_df['משניות'][haluka_df_row] = siddur_list['mshnt_list'][n][:mshnt_per_day]
             haluka_df_row = haluka_df_row+1
             siddur_list['mshnt_list'][n] = siddur_list['mshnt_list'][n][mshnt_per_day:]
 
@@ -418,8 +421,8 @@ while n <= siddur_df_num_of_rows(siddur_list):
                 # siddur_list['mshnt_list'][n+1] = mshnt_merdge[mshnt_per_day:]
                 #
                 # # haluka_df append
-                # haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                # haluka_df['mishnahyot'][haluka_df_row] = mshnt_merdge[:mshnt_per_day]
+                # haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                # haluka_df['משניות'][haluka_df_row] = mshnt_merdge[:mshnt_per_day]
                 #haluka_df_row = haluka_df_row+1
                 flag = True
                 break
@@ -432,9 +435,9 @@ while n <= siddur_df_num_of_rows(siddur_list):
 
                 # haluka_df append
                 print('line 323 adding chapter:', siddur_list['chapter'][n])
-                haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
-                haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n]
+                haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n]
+                haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                haluka_df['משניות'][haluka_df_row] = siddur_list['mshnt_list'][n]
                 break
 
         keep_tractate_from_end_of_N_loop = False
@@ -449,20 +452,20 @@ while n <= siddur_df_num_of_rows(siddur_list):
                 print('line 385', siddur_list['chapter_from_past'][n])
 
                 if siddur_list['chapter_from_past'][n] and siddur_list['tractate'][n-1] != siddur_list['tractate'][n]:     ######################  when mishnayot 6 - line 26 in CSV need to be fixed
-                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n-1] + ' ' + siddur_list['tractate'][n]
-                    haluka_df['chapter'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
-                    print('line 392 - tractate:', haluka_df['tarctate'][haluka_df_row])
+                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n-1] + ' ' + siddur_list['tractate'][n]
+                    haluka_df['פרק'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
+                    print('line 392 - tractate:', haluka_df['מסכת'][haluka_df_row])
                 elif siddur_list['chapter_from_past'][n] and siddur_list['tractate'][n-1] == siddur_list['tractate'][n]:
-                    haluka_df['chapter'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
-                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
-                    print('line 395 - tractate:', haluka_df['chapter'][haluka_df_row])
+                    haluka_df['פרק'][haluka_df_row] = siddur_list['chapter_from_past'][n] + ' ' + siddur_list['chapter'][n]
+                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n]
+                    print('line 395 - tractate:', haluka_df['פרק'][haluka_df_row])
 
                 else:
-                    haluka_df['tarctate'][haluka_df_row] = siddur_list['tractate'][n]
+                    haluka_df['מסכת'][haluka_df_row] = siddur_list['tractate'][n]
 
                     keep_tractate_from_end_of_N_loop = siddur_list['tractate'][n]
-                    haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n]
+                    haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                haluka_df['משניות'][haluka_df_row] = siddur_list['mshnt_list'][n]
                 haluka_df_row = haluka_df_row + 1
                 n = n + 1
                 continue
@@ -474,9 +477,9 @@ while n <= siddur_df_num_of_rows(siddur_list):
 
                 # haluka_df append
                 print('line 273 adding chapter:', siddur_list['chapter'][n])
-                haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                haluka_df['chapter'][haluka_df_row] = siddur_list['chapter'][n]
-                haluka_df['mishnahyot'][haluka_df_row] = siddur_list['mshnt_list'][n]
+                haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                haluka_df['פרק'][haluka_df_row] = siddur_list['chapter'][n]
+                haluka_df['משניות'][haluka_df_row] = siddur_list['mshnt_list'][n]
 
 
     n = n + 1
@@ -485,19 +488,19 @@ while n <= siddur_df_num_of_rows(siddur_list):
 
 
 # droping empty numpy array haluka_df
-haluka_df = haluka_df.loc[haluka_df["mishnahyot"] != 'None']
+haluka_df = haluka_df.loc[haluka_df['משניות'] != 'None']
 
 for index, row in haluka_df.iterrows():
     try:
         if isnumpyempty(haluka_df.mishnahyot[index]):
             haluka_df.drop(labels=index,axis=0,inplace=True)
     except:
-        if haluka_df.mishnahyot[index] == 'None':
+        if haluka_df['משניות'][index] == 'None':
             haluka_df.drop(labels=index,axis=0,inplace=True)
 
 
 
-#haluka_df['mishnahyot'] = np.where((isnumpyempty(haluka_df.mishnahyot)),None,haluka_df.mishnahyot)
+#haluka_df['משניות'] = np.where((isnumpyempty(haluka_df.mishnahyot)),None,haluka_df.mishnahyot)
 
 
 zeraim = ["ברכות","פאה","דמאי","כלאיים","שביעית","תרומות","מעשרות","מעשר שני","חלה","ערלה","ביכורים"]
@@ -509,15 +512,14 @@ for i, row in haluka_df.iterrows():
         row['סידור'] = 'זרעים '
 
     elif first_tractate in zeraim:
-        row['סידור'] =
+        row['סידור'] = 'זרעים '
 
 
-        try:
-            print('row 0', row[0].split(' ')[0])
-            print('row 1:',row[0].split(' ')[1])
-        except:
-            err = 'error'
-
+        # try:
+        #     print('row 0', row[0].split(' ')[0])
+        #     print('row 1:',row[0].split(' ')[1])
+        # except:
+        #     err = 'error'
 
 
 
