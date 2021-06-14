@@ -1,18 +1,15 @@
-axios.post("/yourUrl"
-                , data,
-                {responseType: 'blob'}
-            ).then(function (response) {
-                    let fileName = response.headers["content-disposition"].split("filename=")[1];
-                    if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE variant
-                        window.navigator.msSaveOrOpenBlob(new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),
-                            fileName);
-                    } else {
-                        const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.setAttribute('download', response.headers["content-disposition"].split("filename=")[1]);
-                        document.body.appendChild(link);
-                        link.click();
-                    }
-                }
-            );
+def scan_for_issues(device_name, total_value_ok):
+    
+    filter_resource_002 = df["Resource"]=='002'
+    metrics = ['BitsOut', 'ArpAvaililability', 'BitsOut']
+    
+    
+    for metric in metrics:
+        filter_resource_metric = df["Metric"]==metric
+        for index, row in df.iterrows():
+            if row['Resource'] == device_name and row['Metric'] == metric and row['total']==total_value_ok:
+                df_tmp = df.where(filter_resource_002 & filter_resource_metric , axis=0)
+                df_tmp.dropna(inplace=True)
+                total=int(df_tmp['total'])
+                if total != total_value_ok:
+                    print("not good")
